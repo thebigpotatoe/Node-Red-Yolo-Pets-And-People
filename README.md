@@ -7,17 +7,29 @@ The python script used in this repository is based on the fantastic work and tut
 The initial idea behind this script was to improve presence detection of people and pets in the home in conjunction with existining technologies such as PIR, Doplar, etc. Using a variuety of image sources this script can proccess an image and provide a useful output of detected people or pets. This output could be used to switch lights and appliances on and off, set moods, change alarm status's the list goes on. Combining the power of the YOLO algorithim in python with the flexibility of node red into a basic subflow allows just this.
 
 ## Usage
-Using various inputs of images from Node red via a FTP, HTTP, Pi Camera or other image source, the script takes the image, saves it, then runs the Yolo.py script on that image. The output of the script is a JSOM object contatining information on if a Person, Cat, or Dog was found. The script also saves the last analysed image and the last image with detections for extra information.
+> Note that Python 3.6.3 and above must be installed on the machine and its directory added to PATH
 
-To use this subflow correctly, clone or download this repository into a known place, remeber where this is as we will be refering to it later. 
+To use this subflow correctly, clone or download this repository into a known place. Then copy and import via the clipboard the Node Red Subflow in the Yolo-Sub-Flow.json file. This will import the flow into node red for you under the category Image Recognition. This sub flow is based entirely on built in nodes so there are no dependencies that need to be installed in Node Red. 
 
-Then copy and import via the clipboard the Node Red Subflow in the .json file. This will import the flow into node red for you. This sub flow is based entirely on built in nodes so there are no dependencies that need to be downloaded. 
+![Example Flow](docs/Added%20Subflow.PNG)
 
-Next fill in the contextual data in the sub flow menu. This is where you point the sub flow to the location of the Yolo cfg, weights, and coco names files that are included in this repository. Next the file location is where you can choose to place the saved images from the script for analysis and output. These files are overwritten each time the script is run, so put them somewhere that can be accessed quckily such as an SSD drive for better perfromance.
+Using various inputs of images from Node Red via a **FTP**, **HTTP**, **Pi Camera** or other image source, the Subflow saves the image, then runs the Yolo.py script on that image, then outputs the result from 3 outputs. The first output of the script is a JSON object contatining information on if a Person, Cat, or Dog was found. The script also saves the last analysed image and the last image with detections for extra information, and outputs them via outouts 2 and 3 respectively.
 
-The other settings are for thresholds in the algorithim. These are the confidence limit for the miniumum accepted probability of a detection to be true, NMS limit for the non maxima suppression limt and delay time between inferences.
+![Example Flow](docs/Used%20Subflow.PNG)
 
-- Explain each of the settings in teh subflow in more details 
+Next fill in the contextual data in the sub flow menu. The *Images Folder* option is required and points to where you would like to store the images for the instance of the subflow. The subflow stores the last image as *Last Image.jpg*, the last analysed image as *Last Analysed Image.jpg*, and the last image with a detected Person or Pet as *Last Object Image.jpg*. 
+
+> Note that if the same location is used for multiple nodes then the images will be overwritten by the last used node.
+
+The *Yolo Folder* option is required and needs to point to the Yolo Data folder in this repository, so find where you have cloned this repository to and copy the complete link such as "c:\YoloData" or "usr/YoloData". This is for the python script to find the correct .cfg, .weights, and coco .names files.
+
+> Note that windows paths contain \ when copied, be sure to replace these with / incase anything in the script misinterpretates this
+
+The Detection Delay option has a default value of 5 seconds and is used to ignore incoming messages for that select period of time. If the Subflow is analysing an image and a new one is presented before the time out, the message is dropped by the subflow. It is important to note that this should be larger than the inference time witnessed on your machine or else it may cause overloading of resources.
+
+The Recognition Confidence settings is the confidence level an object has to be in order to be recognised as true and output into the image and JSON object. The Maxima Threshold setting is the level of non maxima supprison to apply after detection to eleminate overalpping bounding boxes. These settings default to 50% and 0.3 respectivly. 
+
+![Example Flow](docs/Used%20Subflow.PNG)
 
 ## Example Flow
 ###### Required Nodes
