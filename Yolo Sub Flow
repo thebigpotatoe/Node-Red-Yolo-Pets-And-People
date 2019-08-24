@@ -1,0 +1,369 @@
+[
+    {
+        "id": "2bbf6940.c36596",
+        "type": "subflow",
+        "name": "Yolo Person, Cat, and Dog Detection",
+        "info": "",
+        "category": "Image Recognition",
+        "in": [
+            {
+                "x": 280,
+                "y": 60,
+                "wires": [
+                    {
+                        "id": "e69113f9.4f441"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 280,
+                "y": 500,
+                "wires": [
+                    {
+                        "id": "fa9ea0b3.11dae",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 600,
+                "y": 500,
+                "wires": [
+                    {
+                        "id": "bc1467c3.ef6f18",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 920,
+                "y": 500,
+                "wires": [
+                    {
+                        "id": "814b6fb2.3b56d",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "Images Folder",
+                "type": "str",
+                "value": ""
+            },
+            {
+                "name": "Yolo Folder",
+                "type": "str",
+                "value": ""
+            },
+            {
+                "name": "Detection Delay",
+                "type": "num",
+                "value": "5"
+            },
+            {
+                "name": "Recognition Confidence",
+                "type": "num",
+                "value": "50"
+            },
+            {
+                "name": "Maxima Threshold",
+                "type": "num",
+                "value": "0.3"
+            }
+        ],
+        "status": {
+            "x": 740,
+            "y": 60,
+            "wires": [
+                {
+                    "id": "5c6bf844.183128",
+                    "port": 0
+                },
+                {
+                    "id": "569b99d9.6bc278",
+                    "port": 0
+                },
+                {
+                    "id": "fa9ea0b3.11dae",
+                    "port": 0
+                },
+                {
+                    "id": "a2122a5c.802958",
+                    "port": 0
+                }
+            ]
+        }
+    },
+    {
+        "id": "961436d.d7054c8",
+        "type": "exec",
+        "z": "2bbf6940.c36596",
+        "command": "python",
+        "addpay": true,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "5000",
+        "oldrc": false,
+        "name": "Execute Python Script",
+        "x": 360,
+        "y": 320,
+        "wires": [
+            [
+                "fa9ea0b3.11dae",
+                "884f92cd.7cd97"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "aa798ec0.12cce",
+        "type": "file",
+        "z": "2bbf6940.c36596",
+        "name": "Write Last Image",
+        "filename": "",
+        "appendNewline": false,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 350,
+        "y": 220,
+        "wires": [
+            [
+                "d58e1a0d.eec118"
+            ]
+        ]
+    },
+    {
+        "id": "fa9ea0b3.11dae",
+        "type": "json",
+        "z": "2bbf6940.c36596",
+        "name": "Create JSON Message",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 370,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b7119dd0.36257",
+        "type": "delay",
+        "z": "2bbf6940.c36596",
+        "name": "Rate Limiter",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "30",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "x": 330,
+        "y": 140,
+        "wires": [
+            [
+                "2b452ace.691d86"
+            ]
+        ]
+    },
+    {
+        "id": "2b452ace.691d86",
+        "type": "function",
+        "z": "2bbf6940.c36596",
+        "name": "Filename Creator",
+        "func": "msg.filename = env.get(\"Images Folder\") + \"/Last Image.jpg\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 180,
+        "wires": [
+            [
+                "aa798ec0.12cce"
+            ]
+        ]
+    },
+    {
+        "id": "d58e1a0d.eec118",
+        "type": "function",
+        "z": "2bbf6940.c36596",
+        "name": "Command Creator",
+        "func": "// Clean Message \nmsg = {}\n\n// Change backslash for forward slash \nimagesFolder = env.get(\"Images Folder\")//.split(\"\\\\\").join(\"/\")\nyoloFolder = env.get(\"Yolo Folder\")//.split(\"\\\\\").join(\"/\")\n\n// Create output string\nmsg.payload = \" \\\"\"             + yoloFolder                + \"/yolo.py\\\"\"  +\n              \" --folder \\\"\"    + imagesFolder              + \"\\\"\"          +\n              \" --yolo \\\"\"      + yoloFolder                + \"\\\"\"          + \n              \" --confidence \"  + env.get(\"Recognition Confidence\")/100     +  \n              \" --threshold \"   + env.get(\"Maxima Threshold\")/100 \n           \n// Return msg  \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 260,
+        "wires": [
+            [
+                "961436d.d7054c8",
+                "5c6bf844.183128"
+            ]
+        ]
+    },
+    {
+        "id": "884f92cd.7cd97",
+        "type": "delay",
+        "z": "2bbf6940.c36596",
+        "name": "Wait for Image Write",
+        "pauseType": "delay",
+        "timeout": "250",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 680,
+        "y": 380,
+        "wires": [
+            [
+                "e58175a3.cfb3d8",
+                "9b409bff.7a26b8"
+            ]
+        ]
+    },
+    {
+        "id": "bc1467c3.ef6f18",
+        "type": "file in",
+        "z": "2bbf6940.c36596",
+        "name": "Read Last Analysed Image",
+        "filename": "",
+        "format": "",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "x": 700,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e58175a3.cfb3d8",
+        "type": "function",
+        "z": "2bbf6940.c36596",
+        "name": "Filename Creator",
+        "func": "msg.filename = env.get(\"Images Folder\") + \"/Last Analysed Image.jpg\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 670,
+        "y": 420,
+        "wires": [
+            [
+                "bc1467c3.ef6f18"
+            ]
+        ]
+    },
+    {
+        "id": "814b6fb2.3b56d",
+        "type": "file in",
+        "z": "2bbf6940.c36596",
+        "name": "Read Last Object Image",
+        "filename": "",
+        "format": "",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "x": 1010,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9b409bff.7a26b8",
+        "type": "function",
+        "z": "2bbf6940.c36596",
+        "name": "Filename Creator",
+        "func": "msg.filename = env.get(\"Images Folder\") + \"/Last Object Image.jpg\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 990,
+        "y": 420,
+        "wires": [
+            [
+                "814b6fb2.3b56d"
+            ]
+        ]
+    },
+    {
+        "id": "e69113f9.4f441",
+        "type": "function",
+        "z": "2bbf6940.c36596",
+        "name": "Delay Creator",
+        "func": "msg.delay = env.get(\"Detection Delay\")*1000\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 340,
+        "y": 100,
+        "wires": [
+            [
+                "b7119dd0.36257"
+            ]
+        ]
+    },
+    {
+        "id": "5c6bf844.183128",
+        "type": "function",
+        "z": "2bbf6940.c36596",
+        "name": "Update Status",
+        "func": "msg = {}\nmsg.payload = \"Processing\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 600,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "569b99d9.6bc278",
+        "type": "function",
+        "z": "2bbf6940.c36596",
+        "name": "Update Status",
+        "func": "if (msg.payload.code === 0) {\n    msg = {}\n    msg.payload = \"Successful\"\n}\nelse {\n    msg = {}\n    msg.payload = \"Error from script\"\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 600,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a2122a5c.802958",
+        "type": "catch",
+        "z": "2bbf6940.c36596",
+        "name": "Catch All",
+        "scope": null,
+        "uncaught": false,
+        "x": 580,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e058ed26.b31c4",
+        "type": "subflow:2bbf6940.c36596",
+        "z": "7cc3f78e.889318",
+        "name": "",
+        "x": 840,
+        "y": 1340,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    }
+]
