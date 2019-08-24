@@ -1,7 +1,7 @@
 # Node-Red Yolo Pets and People
 
 ## Disclaimer
-The python script used in this repository is based on the fantastic work and tutorials by Adrian Rosebrock over at https://www.pyimagesearch.com. If you find this repository interesting or helpful, I would highly recommend checking out his website for much more in depth tutorials on Python image analysis and AI.
+The python script used in this repository is based on the fantastic work and tutorials by Adrian Rosebrock over at https://www.pyimagesearch.com. If you find this repository interesting or helpful, I would highly recommend checking out his website for much more in depth tutorials on Python Image Analysis.
 
 ## Premises
 The initial idea behind this script was to improve presence detection of people and pets in the home in conjunction with existing technologies such as PIR, Doppler, etc. Using a variety of image sources this script can process an image and provide a useful output of detected people or pets. This output could be used to switch lights and appliances on and off, set moods, change alarm status's the list goes on. Combining the power of the YOLO algorithm in python with the flexibility of node red into a basic sub flow allows just this.
