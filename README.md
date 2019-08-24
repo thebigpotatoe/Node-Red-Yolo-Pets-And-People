@@ -28,7 +28,7 @@ The other settings are for thresholds in the algorithim. These are the confidenc
 
 The Example-Flow,.json contains an example for usage with a http request, raspberry pi camera, and FTP server nodes. These nodes combined with the base64 encode node and image output node can produce a working example of how the Yolo sub flow works. Simply import the JSON in the file into node red and install any missing nodes from the pallet manager.
 
-[Example Flow](https://github.com/thebigpotatoe/Node-Red-Yolo-Script/blob/master/docs/Sample%20Flow%20Output.PNG)
+[Example Flow](docs/Sample%20Flow%20Output.PNG)
 
 ## Performance Expectations
 The most important thing to watch for when using this subflow is overloading your system. Every time the node is sent a new image, it spawns a new instance of the script in parallel with any others that may be running. On resource constrained environemnts such as the raspberry pi, these resources will be used up quickly and may lead to the pi not responding or crashing. Due to this the Detection Delay was added so that intermediate messages are dropped before the proccess has finsihed during that period.
