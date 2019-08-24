@@ -1,5 +1,7 @@
 # Node-Red Yolo Pets and People
 
+![Example Flow](Sample%20Images/Sample%202%20-%20Analysed.jpg)
+
 ## Disclaimer
 The python script used in this repository is based on the fantastic work and tutorials by Adrian Rosebrock over at https://www.pyimagesearch.com. If you find this repository interesting or helpful, I would highly recommend checking out his website for much more in depth tutorials on Python Image Analysis.
 
