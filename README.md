@@ -1,4 +1,4 @@
-# Node-Red-Yolo-Pets-And-People
+# Node-Red Yolo Pets and People
 
 ## Disclaimer
 The python script used in this repository is based on the fantastic work and tutorials by Ardian Rosebrock over at https://www.pyimagesearch.com. If you find this repository interesting or helpful I would highly recomend checking out his website for much more in depth tutorials on Python image analysis and AI.
