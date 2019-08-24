@@ -7,10 +7,10 @@ The python script used in this repository is based on the fantastic work and tut
 The initial idea behind this script was to improve presence detection of people and pets in the home in conjunction with existining technologies such as PIR, Doplar, etc. Using a variuety of image sources this script can proccess an image and provide a useful output of detected people or pets. This output could be used to switch lights and appliances on and off, set moods, change alarm status's the list goes on. Combining the power of the YOLO algorithim in python with the flexibility of node red into a basic subflow allows just this.
 
 ## Prerequisits
-While every effort was made not to use prerequisits in Node-Red, the same cannot be said for the python script. To start, the script will only run on python 3.6.3 and above, not python 2.7. All of its dependencies will need to be istalled and working before the script can operate. These dependancies are OpenCV as the pipeline to load, process, and store images, as well as argparse for passing infromation to the script. These can easily be installed into pythin using pip;
+While every effort was made not to have dependencies in Node-Red, the same cannot be said for the Python script. To start, the script will **only run on python 3.6.3 and above**, not python 2.7. All of its dependencies will need to be istalled and working before the script can operate. These dependancies are OpenCV as the pipeline to load, process, and store images, as well as argparse for passing infromation to the script. These can easily be installed into python using pip;
 
-- pip install opencv-python
-- pip install argparse
+- 'pip install opencv-python'
+- 'pip install argparse'
 
 The OpenCV-python install requires no other installation of OpenCV be present on the host machine. This is the only downside, but if you have OpenCV installed already and working for Python the script should work out of the box.
 
@@ -25,17 +25,19 @@ Using various inputs of images from Node Red via a **FTP**, **HTTP**, **Pi Camer
 
 ![Example Flow](docs/Used%20Subflow.PNG)
 
-Next fill in the contextual data in the sub flow menu. The *Images Folder* option is required and points to where you would like to store the images for the instance of the subflow. The subflow stores the last image as *Last Image.jpg*, the last analysed image as *Last Analysed Image.jpg*, and the last image with a detected Person or Pet as *Last Object Image.jpg*. 
+Next fill in the contextual data in the sub flow menu. The **Images Folder** option is required and points to where you would like to store the images for the instance of the subflow. The subflow stores the last image as *Last Image.jpg*, the last analysed image as *Last Analysed Image.jpg*, and the last image with a detected Person or Pet as *Last Object Image.jpg*. 
 
 > Note that if the same location is used for multiple nodes then the images will be overwritten by the last used node.
 
-The *Yolo Folder* option is required and needs to point to the Yolo Data folder in this repository, so find where you have cloned this repository to and copy the complete link such as "c:\YoloData" or "usr/YoloData". This is for the python script to find the correct .cfg, .weights, and coco .names files.
+The **Yolo Folder** option is required and needs to point to the Yolo Data folder in this repository, so find where you have cloned this repository to and copy the complete link such as "c:\YoloData" or "usr/YoloData". This is for the python script to find the correct .cfg, .weights, and coco .names files.
 
 > Note that windows paths contain \ when copied, be sure to replace these with / incase anything in the script misinterpretates this
 
-The Detection Delay option has a default value of 5 seconds and is used to ignore incoming messages for that select period of time. If the Subflow is analysing an image and a new one is presented before the time out, the message is dropped by the subflow. It is important to note that this should be larger than the inference time witnessed on your machine or else it may cause overloading of resources.
+The **Detection Delay** option has a default value of 5 seconds and is used to ignore incoming messages for that select period of time. If the Subflow is analysing an image and a new one is presented before the time out, the message is dropped by the subflow. 
 
-The Recognition Confidence settings is the confidence level an object has to be in order to be recognised as true and output into the image and JSON object. The Maxima Threshold setting is the level of non maxima supprison to apply after detection to eleminate overalpping bounding boxes. These settings default to 50% and 0.3 respectivly. 
+> Note that the delay time should be larger than the inference time witnessed on your machine or else it may cause overloading of resources.
+
+The **Recognition Confidence** settings is the confidence level an object has to be in order to be recognised as true and output into the image and JSON object. The **Maxima Threshold** setting is the level of non maxima supprison to apply after detection to eleminate overalpping bounding boxes. These settings default to 50% and 0.3 respectivly. 
 
 ![Example Flow](docs/Subflow%20Options.PNG)
 
