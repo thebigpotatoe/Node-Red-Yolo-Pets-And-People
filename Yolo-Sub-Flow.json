@@ -1,6 +1,6 @@
 [
     {
-        "id": "2bbf6940.c36596",
+        "id": "e773b1c4.62ac3",
         "type": "subflow",
         "name": "Yolo Person, Cat, and Dog Detection",
         "info": "",
@@ -11,7 +11,7 @@
                 "y": 60,
                 "wires": [
                     {
-                        "id": "e69113f9.4f441"
+                        "id": "37250b8.c89aef4"
                     }
                 ]
             }
@@ -22,7 +22,7 @@
                 "y": 500,
                 "wires": [
                     {
-                        "id": "fa9ea0b3.11dae",
+                        "id": "66d71209.cae3ec",
                         "port": 0
                     }
                 ]
@@ -32,7 +32,7 @@
                 "y": 500,
                 "wires": [
                     {
-                        "id": "bc1467c3.ef6f18",
+                        "id": "169739de.e65176",
                         "port": 0
                     }
                 ]
@@ -42,7 +42,7 @@
                 "y": 500,
                 "wires": [
                     {
-                        "id": "814b6fb2.3b56d",
+                        "id": "41330e3a.06754",
                         "port": 0
                     }
                 ]
@@ -76,32 +76,40 @@
             }
         ],
         "status": {
-            "x": 740,
-            "y": 60,
+            "x": 800,
+            "y": 100,
             "wires": [
                 {
-                    "id": "5c6bf844.183128",
+                    "id": "14b84b63.cfe9a5",
                     "port": 0
                 },
                 {
-                    "id": "569b99d9.6bc278",
+                    "id": "be479282.d29ce",
                     "port": 0
                 },
                 {
-                    "id": "fa9ea0b3.11dae",
+                    "id": "66d71209.cae3ec",
                     "port": 0
                 },
                 {
-                    "id": "a2122a5c.802958",
+                    "id": "49f19998.3bf6b8",
                     "port": 0
+                },
+                {
+                    "id": "b42956e9.27abe8",
+                    "port": 1
+                },
+                {
+                    "id": "53f4fffe.cda54",
+                    "port": 1
                 }
             ]
         }
     },
     {
-        "id": "961436d.d7054c8",
+        "id": "7fdf3e34.37c07",
         "type": "exec",
-        "z": "2bbf6940.c36596",
+        "z": "e773b1c4.62ac3",
         "command": "python",
         "addpay": true,
         "append": "",
@@ -113,17 +121,19 @@
         "y": 320,
         "wires": [
             [
-                "fa9ea0b3.11dae",
-                "884f92cd.7cd97"
+                "66d71209.cae3ec",
+                "7eaeb859.41d378"
             ],
-            [],
+            [
+                "be479282.d29ce"
+            ],
             []
         ]
     },
     {
-        "id": "aa798ec0.12cce",
+        "id": "1d90c09f.6e417f",
         "type": "file",
-        "z": "2bbf6940.c36596",
+        "z": "e773b1c4.62ac3",
         "name": "Write Last Image",
         "filename": "",
         "appendNewline": false,
@@ -134,14 +144,14 @@
         "y": 220,
         "wires": [
             [
-                "d58e1a0d.eec118"
+                "53f4fffe.cda54"
             ]
         ]
     },
     {
-        "id": "fa9ea0b3.11dae",
+        "id": "66d71209.cae3ec",
         "type": "json",
-        "z": "2bbf6940.c36596",
+        "z": "e773b1c4.62ac3",
         "name": "Create JSON Message",
         "property": "payload",
         "action": "obj",
@@ -153,15 +163,15 @@
         ]
     },
     {
-        "id": "b7119dd0.36257",
+        "id": "21c1b2b5.eaf97e",
         "type": "delay",
-        "z": "2bbf6940.c36596",
+        "z": "e773b1c4.62ac3",
         "name": "Rate Limiter",
         "pauseType": "rate",
         "timeout": "5",
         "timeoutUnits": "seconds",
         "rate": "1",
-        "nbRateUnits": "30",
+        "nbRateUnits": "5",
         "rateUnits": "second",
         "randomFirst": "1",
         "randomLast": "5",
@@ -171,47 +181,49 @@
         "y": 140,
         "wires": [
             [
-                "2b452ace.691d86"
+                "b42956e9.27abe8"
             ]
         ]
     },
     {
-        "id": "2b452ace.691d86",
+        "id": "b42956e9.27abe8",
         "type": "function",
-        "z": "2bbf6940.c36596",
+        "z": "e773b1c4.62ac3",
         "name": "Filename Creator",
-        "func": "msg.filename = env.get(\"Images Folder\") + \"/Last Image.jpg\"\nreturn msg;",
-        "outputs": 1,
+        "func": "if (env.get(\"Images Folder\") !== \"\"){\n    msg.filename = env.get(\"Images Folder\") + \"/Last Image.jpg\"\n    return [msg, null];\n}\nelse {\n    msg.payload = \"No Image Folder Given\"\n    node.warn(msg.payload)\n    return [null, msg];\n}\n",
+        "outputs": 2,
         "noerr": 0,
         "x": 350,
         "y": 180,
         "wires": [
             [
-                "aa798ec0.12cce"
-            ]
+                "1d90c09f.6e417f"
+            ],
+            []
         ]
     },
     {
-        "id": "d58e1a0d.eec118",
+        "id": "53f4fffe.cda54",
         "type": "function",
-        "z": "2bbf6940.c36596",
+        "z": "e773b1c4.62ac3",
         "name": "Command Creator",
-        "func": "// Clean Message \nmsg = {}\n\n// Change backslash for forward slash \nimagesFolder = env.get(\"Images Folder\")//.split(\"\\\\\").join(\"/\")\nyoloFolder = env.get(\"Yolo Folder\")//.split(\"\\\\\").join(\"/\")\n\n// Create output string\nmsg.payload = \" \\\"\"             + yoloFolder                + \"/yolo.py\\\"\"  +\n              \" --folder \\\"\"    + imagesFolder              + \"\\\"\"          +\n              \" --yolo \\\"\"      + yoloFolder                + \"\\\"\"          + \n              \" --confidence \"  + env.get(\"Recognition Confidence\")/100     +  \n              \" --threshold \"   + env.get(\"Maxima Threshold\")/100 \n           \n// Return msg  \nreturn msg;",
-        "outputs": 1,
+        "func": "// Clean Message \nmsg = {}\n\n// Change backslash for forward slash \nimagesFolder = env.get(\"Images Folder\")//.split(\"\\\\\").join(\"/\")\nyoloFolder = env.get(\"Yolo Folder\")//.split(\"\\\\\").join(\"/\")\n\nif (yoloFolder !== \"\") {\n    // Create output string\n    msg.payload = \" \\\"\"             + yoloFolder                + \"/yolo.py\\\"\"  +\n                  \" --folder \\\"\"    + imagesFolder              + \"\\\"\"          +\n                  \" --yolo \\\"\"      + yoloFolder                + \"\\\"\"          + \n                  \" --confidence \"  + env.get(\"Recognition Confidence\")/100     +  \n                  \" --threshold \"   + env.get(\"Maxima Threshold\")/100 \n    // Return msg  \n    return [msg, null];            \n}\nelse {\n    msg.payload = \"No Yolo Data Folder Specified\"\n    node.warn(msg.payload)\n    return [null, msg];         \n}\n",
+        "outputs": 2,
         "noerr": 0,
         "x": 350,
         "y": 260,
         "wires": [
             [
-                "961436d.d7054c8",
-                "5c6bf844.183128"
-            ]
+                "7fdf3e34.37c07",
+                "14b84b63.cfe9a5"
+            ],
+            []
         ]
     },
     {
-        "id": "884f92cd.7cd97",
+        "id": "7eaeb859.41d378",
         "type": "delay",
-        "z": "2bbf6940.c36596",
+        "z": "e773b1c4.62ac3",
         "name": "Wait for Image Write",
         "pauseType": "delay",
         "timeout": "250",
@@ -227,15 +239,15 @@
         "y": 380,
         "wires": [
             [
-                "e58175a3.cfb3d8",
-                "9b409bff.7a26b8"
+                "15b27ecc.692901",
+                "e90776d4.393c08"
             ]
         ]
     },
     {
-        "id": "bc1467c3.ef6f18",
+        "id": "169739de.e65176",
         "type": "file in",
-        "z": "2bbf6940.c36596",
+        "z": "e773b1c4.62ac3",
         "name": "Read Last Analysed Image",
         "filename": "",
         "format": "",
@@ -249,9 +261,9 @@
         ]
     },
     {
-        "id": "e58175a3.cfb3d8",
+        "id": "15b27ecc.692901",
         "type": "function",
-        "z": "2bbf6940.c36596",
+        "z": "e773b1c4.62ac3",
         "name": "Filename Creator",
         "func": "msg.filename = env.get(\"Images Folder\") + \"/Last Analysed Image.jpg\"\nreturn msg;",
         "outputs": 1,
@@ -260,14 +272,14 @@
         "y": 420,
         "wires": [
             [
-                "bc1467c3.ef6f18"
+                "169739de.e65176"
             ]
         ]
     },
     {
-        "id": "814b6fb2.3b56d",
+        "id": "41330e3a.06754",
         "type": "file in",
-        "z": "2bbf6940.c36596",
+        "z": "e773b1c4.62ac3",
         "name": "Read Last Object Image",
         "filename": "",
         "format": "",
@@ -281,9 +293,9 @@
         ]
     },
     {
-        "id": "9b409bff.7a26b8",
+        "id": "e90776d4.393c08",
         "type": "function",
-        "z": "2bbf6940.c36596",
+        "z": "e773b1c4.62ac3",
         "name": "Filename Creator",
         "func": "msg.filename = env.get(\"Images Folder\") + \"/Last Object Image.jpg\"\nreturn msg;",
         "outputs": 1,
@@ -292,14 +304,14 @@
         "y": 420,
         "wires": [
             [
-                "814b6fb2.3b56d"
+                "41330e3a.06754"
             ]
         ]
     },
     {
-        "id": "e69113f9.4f441",
+        "id": "37250b8.c89aef4",
         "type": "function",
-        "z": "2bbf6940.c36596",
+        "z": "e773b1c4.62ac3",
         "name": "Delay Creator",
         "func": "msg.delay = env.get(\"Detection Delay\")*1000\nreturn msg;",
         "outputs": 1,
@@ -308,62 +320,75 @@
         "y": 100,
         "wires": [
             [
-                "b7119dd0.36257"
+                "21c1b2b5.eaf97e"
             ]
         ]
     },
     {
-        "id": "5c6bf844.183128",
+        "id": "14b84b63.cfe9a5",
         "type": "function",
-        "z": "2bbf6940.c36596",
+        "z": "e773b1c4.62ac3",
         "name": "Update Status",
         "func": "msg = {}\nmsg.payload = \"Processing\"\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 600,
-        "y": 60,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "569b99d9.6bc278",
-        "type": "function",
-        "z": "2bbf6940.c36596",
-        "name": "Update Status",
-        "func": "if (msg.payload.code === 0) {\n    msg = {}\n    msg.payload = \"Successful\"\n}\nelse {\n    msg = {}\n    msg.payload = \"Error from script\"\n}\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 600,
+        "x": 660,
         "y": 100,
         "wires": [
             []
         ]
     },
     {
-        "id": "a2122a5c.802958",
-        "type": "catch",
-        "z": "2bbf6940.c36596",
-        "name": "Catch All",
-        "scope": null,
-        "uncaught": false,
-        "x": 580,
+        "id": "be479282.d29ce",
+        "type": "function",
+        "z": "e773b1c4.62ac3",
+        "name": "Update Warning",
+        "func": "if (msg.rc.code !== 0) {\n    node.warn(msg.payload)\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 660,
         "y": 140,
         "wires": [
             []
         ]
     },
     {
-        "id": "e058ed26.b31c4",
-        "type": "subflow:2bbf6940.c36596",
-        "z": "7cc3f78e.889318",
+        "id": "49f19998.3bf6b8",
+        "type": "catch",
+        "z": "e773b1c4.62ac3",
         "name": "",
-        "x": 840,
-        "y": 1340,
+        "scope": null,
+        "uncaught": false,
+        "x": 640,
+        "y": 180,
         "wires": [
-            [],
-            [],
             []
+        ]
+    },
+    {
+        "id": "400a2bd5.3acf34",
+        "type": "subflow:e773b1c4.62ac3",
+        "z": "c15c4ebc.408f5",
+        "name": "",
+        "env": [
+            {
+                "name": "Detection Delay",
+                "type": "num",
+                "value": "10"
+            }
+        ],
+        "x": 870,
+        "y": 60,
+        "wires": [
+            [
+                "5e42efef.ed1ed"
+            ],
+            [
+                "def1ae80.20174"
+            ],
+            [
+                "70bc9a48.324904"
+            ]
         ]
     }
 ]
